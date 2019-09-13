@@ -1,11 +1,7 @@
-import { Application } from 'probot' // eslint-disable-line no-unused-vars
+import { Application } from 'probot'
+import { handlePullRequestLabeled } from './handler'
 
-export = (app: Application) => {
-  app.on('pull_request.labeled', async (context) => {
-    const params = context.issue({ reviewers: ['super-reviewer'] })
-    const result = await context.github.pullRequests.createReviewRequest(
-      params
-    )
-    context.log(result)
-  })
+export = (app: Application): void => {
+  app.on('pull_request.labeled', handlePullRequestLabeled);
+  app.on('pull_request.unlabeled', handlePullRequestLabeled);
 }
