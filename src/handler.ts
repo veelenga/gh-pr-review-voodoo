@@ -17,16 +17,16 @@ export async function handlePullRequestLabelChange(context : Context): Promise<v
   let reviewers = (payload.pull_request.request_reviewers || []).map((user: any) => user.login)
 
   let voodoo = new ReviewVoodoo(config, label, reviewers);
-  let reviewersToDelete = voodoo.reviewersToDelete();
-  let reviewersToCreate = voodoo.reviewersToCreate();
 
-  if (reviewersToDelete.length !== 0) {
-    const params = context.issue({ reviewers: reviewersToDelete })
+  voodoo.execute()
+
+  if (voodoo.reviewersToDelete.length !== 0) {
+    const params = context.issue({ reviewers: voodoo.reviewersToDelete })
     const result = await context.github.pullRequests.deleteReviewRequest(params)
   }
 
-  if (reviewersToCreate.length !== 0) {
-    const params = context.issue({ reviewers: reviewersToCreate })
+  if (voodoo.reviewersToCreate.length !== 0) {
+    const params = context.issue({ reviewers: voodoo.reviewersToCreate })
     const result = await context.github.pullRequests.createReviewRequest(params)
   }
 }

@@ -3,25 +3,34 @@ export interface AppConfig {
 }
 
 export default class ReviewVoodoo {
-  private config: AppConfig
-  private label: {name: string, action: string}
-  private reviewers: string[]
+  private _config: AppConfig
+  private _label: {name: string, action: string}
+  private _reviewers: string[]
+  private _reviewersToDelete: string[]
+  private _reviewersToCreate: string[]
 
   public constructor(
     config: AppConfig,
     label: { name: string, action: string },
     reviewers: string[]
   ) {
-    this.config = config
-    this.label = label
-    this.reviewers = reviewers
+    this._config = config
+    this._label = label
+    this._reviewers = reviewers
+    this._reviewersToDelete = [];
+    this._reviewersToCreate = [];
   }
 
-  public reviewersToDelete(): string[] {
-    return []
+  public execute(): void {
+    // TODO:
+    this._reviewersToCreate.push('super-reviewer')
   }
 
-  public reviewersToCreate(): string[] {
-    return []
+  get reviewersToDelete(): string[] {
+    return this._reviewersToDelete;
+  }
+
+  get reviewersToCreate(): string[] {
+    return this._reviewersToCreate;
   }
 }
