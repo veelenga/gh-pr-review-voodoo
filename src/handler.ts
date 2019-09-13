@@ -1,8 +1,8 @@
 import { Context } from 'probot'
+import ReviewVoodoo, {
+  AppConfig
+} from './review_voodoo'
 
-interface AppConfig {
-  reviewGroups: { [key: string]: string[] }
-}
 
 export async function handlePullRequestLabeled(context : Context): Promise<void> {
   const config: AppConfig | null = await context.config<AppConfig | null>(
@@ -12,12 +12,21 @@ export async function handlePullRequestLabeled(context : Context): Promise<void>
     throw new Error('the configuration file failed to load')
   }
 
-  console.log(context.payload.action)
-  console.log(context.payload.label.name)
-  console.log(context.payload.pull_request.requested_reviewers)
+  let payload = context.payload
+  let label = { name: payload.label.name, action: payload.action }
+  let reviewers = (payload.pull_request.request_reviewers || []).map((user: any) => user.login)
 
-  const params = context.issue({ reviewers: ['super-reviewer'] })
-  const result = await context.github.pullRequests.createReviewRequest(
-    params
-  )
+  let voodoo = new ReviewVoodoo(config, label, reviewers);
+  let reviewersToDelete = voodoo.reviewersToDelete();
+  let reviewersToCreate = voodoo.reviewersToCreate();
+
+  if (reviewersToDelete.length !== 0) {
+    const params = context.issue({ reviewers: reviewersToDelete })
+    const result = await context.github.pullRequests.deleteReviewRequest(params)
+  }
+
+  if (reviewersToCreate.length !== 0) {
+    const params = context.issue({ reviewers: reviewersToCreate })
+    const result = await context.github.pullRequests.createReviewRequest(params)
+  }
 }
