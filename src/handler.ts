@@ -12,8 +12,9 @@ export async function handlePullRequestLabeled(context : Context): Promise<void>
     throw new Error('the configuration file failed to load')
   }
 
-  let reviewers = await context.github.pullRequests.listReviewRequests(context.issue())
-  console.log(reviewers.data.users.map((user) => user.login))
+  console.log(context.payload.action)
+  console.log(context.payload.label.name)
+  console.log(context.payload.pull_request.requested_reviewers)
 
   const params = context.issue({ reviewers: ['super-reviewer'] })
   const result = await context.github.pullRequests.createReviewRequest(
