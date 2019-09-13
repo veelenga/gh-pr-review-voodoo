@@ -4,7 +4,7 @@ import ReviewVoodoo, {
 } from './review_voodoo'
 
 
-export async function handlePullRequestLabeled(context : Context): Promise<void> {
+export async function handlePullRequestLabelChange(context : Context): Promise<void> {
   const config: AppConfig | null = await context.config<AppConfig | null>(
     'pr-review-voodoo.yml'
   )

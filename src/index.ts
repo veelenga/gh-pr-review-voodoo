@@ -1,7 +1,7 @@
 import { Application } from 'probot'
-import { handlePullRequestLabeled } from './handler'
+import { handlePullRequestLabelChange } from './handler'
 
 export = (app: Application): void => {
-  app.on('pull_request.labeled', handlePullRequestLabeled);
-  app.on('pull_request.unlabeled', handlePullRequestLabeled);
+  app.on('pull_request.labeled', handlePullRequestLabelChange);
+  app.on('pull_request.unlabeled', handlePullRequestLabelChange);
 }
