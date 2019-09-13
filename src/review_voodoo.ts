@@ -1,4 +1,6 @@
 export interface AppConfig {
+  minAmountOfReviewers: number
+  maxAmountOfReviewers: number
   reviewGroups: { [key: string]: string[] }
 }
 
