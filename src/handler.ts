@@ -18,9 +18,14 @@ export async function handlePullRequestLabelChange (context : Context): Promise<
   context.log.debug(payload)
   context.log.info(`---> Request reviews: ${voodoo.reviewersToRequest}`)
 
-  if (voodoo.reviewersToRequest.length !== 0) {
-    const params = context.issue({ reviewers: voodoo.reviewersToRequest })
-    const result = await context.github.pullRequests.createReviewRequest(params)
+  if (voodoo.reviewersToRequest.length > 0) {
+    try {
+      const params = context.issue({ reviewers: voodoo.reviewersToRequest })
+      const result = await context.github.pullRequests.createReviewRequest(params)
+      context.log.debug(context)
+    } catch(error) {
+      context.log.fatal(error)
+    }
   }
 }
 
