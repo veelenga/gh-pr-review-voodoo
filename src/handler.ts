@@ -1,7 +1,7 @@
 import { Context } from 'probot'
-import ReviewVoodoo, {
+import Voodoo, {
   AppConfig
-} from './review_voodoo'
+} from './voodoo'
 
 
 export async function handlePullRequestLabelChange(context : Context): Promise<void> {
@@ -9,9 +9,9 @@ export async function handlePullRequestLabelChange(context : Context): Promise<v
   let label = { name: payload.label.name, action: payload.action }
   let reviewers = (payload.pull_request.request_reviewers || []).map((user: any) => user.login)
 
-  let voodoo = new ReviewVoodoo(await getConfig(context), label, reviewers);
+  let voodoo = new Voodoo(await getConfig(context), label, reviewers);
 
-  voodoo.execute()
+  voodoo.throwBones()
 
   if (voodoo.reviewersToDelete.length !== 0) {
     const params = context.issue({ reviewers: voodoo.reviewersToDelete })

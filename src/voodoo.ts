@@ -1,10 +1,10 @@
 export interface AppConfig {
   minAmountOfReviewers: number
   maxAmountOfReviewers: number
-  reviewGroups: { [key: string]: string[] }
+  reviewGroupsByLables: { [key: string]: string[] }
 }
 
-export default class ReviewVoodoo {
+export default class Voodoo {
   private _config: AppConfig
   private _label: {name: string, action: string}
   private _reviewers: string[]
@@ -23,7 +23,7 @@ export default class ReviewVoodoo {
     this._reviewersToCreate = [];
   }
 
-  public execute(): void {
+  public throwBones(): void {
     // TODO:
     this._reviewersToCreate.push('super-reviewer')
   }
