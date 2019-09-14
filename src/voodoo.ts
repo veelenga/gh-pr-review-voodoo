@@ -11,7 +11,7 @@ export default class Voodoo {
   private _reviewersToDelete: string[]
   private _reviewersToCreate: string[]
 
-  public constructor(
+  public constructor (
     config: AppConfig,
     label: { name: string, action: string },
     reviewers: string[]
@@ -19,20 +19,21 @@ export default class Voodoo {
     this._config = config
     this._label = label
     this._reviewers = reviewers
-    this._reviewersToDelete = [];
-    this._reviewersToCreate = [];
+    this._reviewersToDelete = []
+    this._reviewersToCreate = []
   }
 
-  public throwBones(): void {
-    // TODO:
+  public throwBones (): void {
+    if (this._reviewers.length >= this._config.maxAmountOfReviewers) return
+
     this._reviewersToCreate.push('super-reviewer')
   }
 
-  get reviewersToDelete(): string[] {
-    return this._reviewersToDelete;
+  get reviewersToDelete (): string[] {
+    return this._reviewersToDelete
   }
 
-  get reviewersToCreate(): string[] {
-    return this._reviewersToCreate;
+  get reviewersToCreate (): string[] {
+    return this._reviewersToCreate
   }
 }
