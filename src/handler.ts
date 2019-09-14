@@ -7,11 +7,15 @@ export async function handlePullRequestLabelChange (context : Context): Promise<
   let payload = context.payload
   let label = payload.label.name
   let reviewers = (payload.pull_request.requested_reviewers || []).map((user: any) => user.login)
+  let pull_title = payload.pull_request.title
+
+  if (pull_title.includes('voodoo') && pull_title.includes('skip')) return
 
   let voodoo = new Voodoo(await getConfig(context), label, reviewers)
 
   voodoo.throwBones()
 
+  context.log.debug(payload)
   context.log.info(`---> Request reviews: ${voodoo.reviewersToRequest}`)
 
   if (voodoo.reviewersToRequest.length !== 0) {
