@@ -5,22 +5,17 @@ import Voodoo, {
 
 export async function handlePullRequestLabelChange (context : Context): Promise<void> {
   let payload = context.payload
-  let label = { name: payload.label.name, action: payload.action }
-  let reviewers = (payload.pull_request.request_reviewers || []).map((user: any) => user.login)
+  let label = payload.label.name
+  let reviewers = (payload.pull_request.requested_reviewers || []).map((user: any) => user.login)
 
   let voodoo = new Voodoo(await getConfig(context), label, reviewers)
 
   voodoo.throwBones()
 
-  context.log.info(`Reviewers to delete: ${voodoo.reviewersToDelete}`)
-  if (voodoo.reviewersToDelete.length !== 0) {
-    const params = context.issue({ reviewers: voodoo.reviewersToDelete })
-    const result = await context.github.pullRequests.deleteReviewRequest(params)
-  }
+  context.log.info(`---> Request reviews: ${voodoo.reviewersToRequest}`)
 
-  context.log.info(`Reviewers to create: ${voodoo.reviewersToCreate}`)
-  if (voodoo.reviewersToCreate.length !== 0) {
-    const params = context.issue({ reviewers: voodoo.reviewersToCreate })
+  if (voodoo.reviewersToRequest.length !== 0) {
+    const params = context.issue({ reviewers: voodoo.reviewersToRequest })
     const result = await context.github.pullRequests.createReviewRequest(params)
   }
 }
@@ -34,7 +29,10 @@ async function getConfig (context : Context): Promise<AppConfig> {
     throw new Error('the configuration file failed to load')
   }
 
+  if (!config.reviewerGroupsByLabels) {
+    throw new Error('reviewer group by labels definition is missing')
+  }
+
   config.minAmountOfReviewers = config.minAmountOfReviewers || 1
-  config.maxAmountOfReviewers = config.maxAmountOfReviewers || 2
   return config
 }

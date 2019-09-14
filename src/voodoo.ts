@@ -1,39 +1,46 @@
 export interface AppConfig {
   minAmountOfReviewers: number
-  maxAmountOfReviewers: number
-  reviewGroupsByLables: { [key: string]: string[] }
+  reviewerGroupsByLabels: { [key: string]: string[] }
 }
 
 export default class Voodoo {
   private _config: AppConfig
-  private _label: {name: string, action: string}
+  private _label: string
   private _reviewers: string[]
-  private _reviewersToDelete: string[]
-  private _reviewersToCreate: string[]
+  private _reviewersToRequest: string[]
 
-  public constructor (
-    config: AppConfig,
-    label: { name: string, action: string },
-    reviewers: string[]
-  ) {
+  public constructor (config: AppConfig, label: string, reviewers: string[]) {
     this._config = config
     this._label = label
     this._reviewers = reviewers
-    this._reviewersToDelete = []
-    this._reviewersToCreate = []
+    this._reviewersToRequest = []
+  }
+
+  get reviewersToRequest (): string[] {
+    return this._reviewersToRequest
   }
 
   public throwBones (): void {
-    if (this._reviewers.length >= this._config.maxAmountOfReviewers) return
+    let reviewersInGroup = this._config.reviewerGroupsByLabels[this._label] || []
+    let potentialReviewers = reviewersInGroup.filter((r: string) => !this._reviewers.includes(r))
 
-    this._reviewersToCreate.push('super-reviewer')
+    let requiredAmountOfReviewersToAdd = Math.max(1, this._config.minAmountOfReviewers - this._reviewers.length)
+    let newReviewers = this.randomReviewers(potentialReviewers, requiredAmountOfReviewersToAdd)
+    this._reviewersToRequest.push(...newReviewers)
   }
 
-  get reviewersToDelete (): string[] {
-    return this._reviewersToDelete
-  }
+  private randomReviewers (list: string[], amount: number): string[] {
+    if (list.length <= amount) return list
 
-  get reviewersToCreate (): string[] {
-    return this._reviewersToCreate
+    let reviewers = []
+
+    while (reviewers.length < amount) {
+      let index = list.length * Math.random() | 0
+      let reviewer = list[index]
+      reviewers.push(reviewer)
+      list.splice(index, 1)
+    }
+
+    return reviewers
   }
 }
