@@ -1,18 +1,21 @@
-# gh-pr-review-voodoo
+# GitHub PR Review Voodoo
 
 > A GitHub App built with [Probot](https://github.com/probot/probot) that A Probot app
+
+A GitHub bot to improve PR review workflow. It is able to:
+
+- [x] request PR reviews based on selected labels
+- [ ] assign PR to requestor or specific people
+- [ ] add/remove labels when PR is opened or reviewed
 
 ## Setup
 
 ```sh
 # Install dependencies
-npm install
-
-# Run typescript
-npm run build
+yarn install
 
 # Run the bot
-npm start
+yarn run dev
 ```
 
 ## Contributing
