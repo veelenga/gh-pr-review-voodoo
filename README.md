@@ -3,7 +3,7 @@
 A GitHub bot to improve PR review workflow. It is able to:
 
 - [x] request PR reviews based on selected labels
-- [ ] assign PR to requestor or specific people
+- [ ] assign PR to requester or specific people
 - [ ] add/remove labels when PR is opened or reviewed
 
 ![](assets/example.png)
@@ -12,10 +12,10 @@ A GitHub bot to improve PR review workflow. It is able to:
 
 ```sh
 # Install dependencies
-yarn install
+npm install
 
 # Run the bot
-yarn run dev
+npm run dev
 ```
 
 ## Config
@@ -42,6 +42,15 @@ reviewerGroupsByLabels:
 minAmountOfReviewers: 2 # a minimum amount of reviewers to be added to PR
 
 ```
+
+## Deployment
+
+```
+$ now deploy
+```
+
+Refer to [Deploying Probot Apps on Now v2](https://medium.com/twostoryrobot/deploying-probot-apps-on-now-v2-b457650dadde) for more info.
+
 
 ## Contributing
 
