@@ -5,13 +5,15 @@ import Voodoo, {
 
 export async function handlePullRequestLabelChange (context : Context): Promise<void> {
   let payload = context.payload
+  let pullRequest = payload.pull_request
   let label = payload.label.name
-  let reviewers = (payload.pull_request.requested_reviewers || []).map((user: any) => user.login)
-  let pull_title = payload.pull_request.title
+  let reviewers = (pullRequest.requested_reviewers || []).map((user: any) => user.login)
+  let pullTitle = pullRequest.title
+  let requestor = pullRequest.user.login
 
-  if (pull_title.includes('voodoo') && pull_title.includes('skip')) return
+  if (pullTitle.includes('voodoo') && pullTitle.includes('skip')) return
 
-  let voodoo = new Voodoo(await getConfig(context), label, reviewers)
+  let voodoo = new Voodoo(await getConfig(context), requestor, label, reviewers)
 
   voodoo.throwBones()
 

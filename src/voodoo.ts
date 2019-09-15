@@ -5,12 +5,14 @@ export interface AppConfig {
 
 export default class Voodoo {
   private _config: AppConfig
+  private _requester: string
   private _label: string
   private _reviewers: string[]
   private _reviewersToRequest: string[]
 
-  public constructor (config: AppConfig, label: string, reviewers: string[]) {
+  public constructor (config: AppConfig, requester: string, label: string, reviewers: string[]) {
     this._config = config
+    this._requester = requester
     this._label = label
     this._reviewers = reviewers
     this._reviewersToRequest = []
@@ -22,7 +24,9 @@ export default class Voodoo {
 
   public throwBones (): void {
     let reviewersInGroup = this._config.reviewerGroupsByLabels[this._label] || []
-    let potentialReviewers = reviewersInGroup.filter((r: string) => !this._reviewers.includes(r))
+    let potentialReviewers = reviewersInGroup.filter(
+      (r: string) => !this._reviewers.includes(r) && r !== this._requester
+    )
 
     let requiredAmountOfReviewersToAdd = Math.max(1, this._config.minAmountOfReviewers - this._reviewers.length)
     let newReviewers = this.randomReviewers(potentialReviewers, requiredAmountOfReviewersToAdd)
