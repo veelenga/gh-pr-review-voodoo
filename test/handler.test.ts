@@ -5,7 +5,7 @@ describe('handlePullRequestLabelChange', () => {
   let event: any
   let context: Context
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     event = {
       id: '123',
       name: 'pull_request',
@@ -63,7 +63,7 @@ describe('handlePullRequestLabelChange', () => {
     expect(spy.mock.calls[0][0]).toEqual('skips adding reviewers')
   })
 
-  test('it adds reviewers to the pull request if there are available reviewers', async() => {
+  test('it adds reviewers to the pull request if there are available reviewers', async () => {
     context.github.pullRequests = {
       createReviewRequest: jest.fn().mockImplementation(async () => {})
     } as any
@@ -79,7 +79,7 @@ describe('handlePullRequestLabelChange', () => {
     expect(createReviewRequestSpy.mock.calls[0][0].reviewers).toMatchObject(['reviewer1', 'reviewer2'])
   })
 
-  test('it does not add reviewers to the pull if there are no available reviewers', async() => {
+  test('it does not add reviewers to the pull if there are no available reviewers', async () => {
     context.github.pullRequests = {
       createReviewRequest: jest.fn().mockImplementation(async () => {})
     } as any

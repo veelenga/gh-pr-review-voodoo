@@ -27,7 +27,7 @@ export async function handlePullRequestLabelChange (context : Context): Promise<
       const params = context.issue({ reviewers: reviewersToRequest })
       const result = await context.github.pullRequests.createReviewRequest(params)
       context.log.debug(context)
-    } catch(error) {
+    } catch (error) {
       context.log.fatal(error)
     }
   }
