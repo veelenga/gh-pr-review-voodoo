@@ -11,18 +11,20 @@ export async function handlePullRequestLabelChange (context : Context): Promise<
   let pullTitle = pullRequest.title
   let requestor = pullRequest.user.login
 
-  if (pullTitle.includes('voodoo') && pullTitle.includes('skip')) return
+  if (pullTitle.includes('voodoo') && pullTitle.includes('skip')) {
+    context.log.info('skips adding reviewers')
+    return
+  }
 
   let voodoo = new Voodoo(await getConfig(context), requestor, label, reviewers)
-
-  voodoo.throwBones()
+  let reviewersToRequest = voodoo.throwBones()
 
   context.log.debug(payload)
-  context.log.info(`---> Request reviews: ${voodoo.reviewersToRequest}`)
+  context.log.info(`---> Request reviews: ${reviewersToRequest}`)
 
-  if (voodoo.reviewersToRequest.length > 0) {
+  if (reviewersToRequest.length > 0) {
     try {
-      const params = context.issue({ reviewers: voodoo.reviewersToRequest })
+      const params = context.issue({ reviewers: reviewersToRequest })
       const result = await context.github.pullRequests.createReviewRequest(params)
       context.log.debug(context)
     } catch(error) {
