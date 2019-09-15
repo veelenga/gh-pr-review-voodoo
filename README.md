@@ -1,5 +1,7 @@
 # GitHub PR Review Voodoo
 
+[![Build Status](https://travis-ci.org/veelenga/gh-pr-review-voodoo.svg?branch=master)](https://travis-ci.org/veelenga/gh-pr-review-voodoo)
+
 A GitHub bot to improve PR review workflow. It is able to:
 
 - [x] request PR reviews based on selected labels
