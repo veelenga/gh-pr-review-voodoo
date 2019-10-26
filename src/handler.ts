@@ -11,7 +11,7 @@ export async function handlePullRequestLabelChange (context : Context): Promise<
   let pullTitle = pullRequest.title
   let requestor = pullRequest.user.login
 
-  if (pullTitle.includes('voodoo') && pullTitle.includes('skip')) {
+  if (skipTitle(pullTitle)) {
     context.log.info('skips adding reviewers')
     return
   }
@@ -26,11 +26,40 @@ export async function handlePullRequestLabelChange (context : Context): Promise<
     try {
       const params = context.issue({ reviewers: reviewersToRequest })
       const result = await context.github.pullRequests.createReviewRequest(params)
-      context.log.debug(context)
+      context.log.debug(result)
     } catch (error) {
       context.log.fatal(error)
     }
   }
+}
+
+export async function handlePullRequestOpened (context : Context): Promise<void> {
+  let pullRequest = context.payload.pull_request
+  let pullTitle = pullRequest.title
+  let requestor = pullRequest.user.login
+
+  if (skipTitle(pullTitle)) {
+    context.log.info('skips assigning reviewers')
+    return
+  }
+
+  const config = await getConfig(context);
+  if (config.autoAssignToRequestor) {
+    const assignees = (pullRequest.assignees || []).map((user : any) => user.login);
+    if (assignees.includes(requestor)) return
+
+    const params = context.issue({ assignees: [requestor] });
+    try {
+      const result = await context.github.issues.addAssignees(params)
+      context.log.debug(result);
+    } catch (error) {
+      context.log.fatal(error);
+    }
+  }
+}
+
+function skipTitle(pullTitle : String) {
+  return pullTitle.includes('voodoo') && pullTitle.includes('skip');
 }
 
 async function getConfig (context : Context): Promise<AppConfig> {
