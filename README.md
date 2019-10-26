@@ -5,8 +5,7 @@
 A GitHub bot to improve PR review workflow. It is able to:
 
 - [x] request PR reviews based on selected labels
-- [ ] assign PR to requester or specific people
-- [ ] add/remove labels when PR is opened or reviewed
+- [x] assign PR to requester
 
 ![](assets/example.png)
 
