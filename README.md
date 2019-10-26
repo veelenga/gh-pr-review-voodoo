@@ -40,7 +40,7 @@ reviewerGroupsByLabels:
     - reviewer3
     - reviewer4
 
-autoAssignToRequestor: true # auto assign opened pull equest to request (false by default)
+autoAssignToRequestor: true # auto assign opened pull request to requestor (false by default)
 minAmountOfReviewers: 2     # a minimum amount of reviewers to be added to PR
 
 ```
