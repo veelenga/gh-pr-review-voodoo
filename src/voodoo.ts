@@ -1,5 +1,6 @@
 export interface AppConfig {
   minAmountOfReviewers: number
+  autoAssignToRequestor: boolean
   reviewerGroupsByLabels: { [key: string]: string[] }
 }
 

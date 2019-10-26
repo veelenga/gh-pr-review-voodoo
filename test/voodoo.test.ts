@@ -6,6 +6,7 @@ describe('Voodoo', () => {
   beforeEach(() => {
     config = {
       minAmountOfReviewers: 2,
+      autoAssignToRequestor: false,
       reviewerGroupsByLabels: {
         label1: [ 'reviewer1', 'reviewer2' ],
         label2: [ 'reviewer3']

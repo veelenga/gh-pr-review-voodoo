@@ -1,5 +1,74 @@
 import { Context } from 'probot'
-import { handlePullRequestLabelChange } from '../src/handler'
+import { handlePullRequestLabelChange, handlePullRequestOpened } from '../src/handler'
+
+describe('handlePullRequestOpened', () => {
+  let event: any
+  let context: Context
+
+  beforeEach(async () => {
+    event = {
+      id: '123',
+      name: 'pull_request',
+      payload: {
+        action: 'opened',
+        number: 1,
+        pull_request: {
+          title: 'New Pull Request',
+          user: {
+            login: 'veelenga'
+          }
+        },
+        repository: {
+          name: 'pr-review-voodoo',
+          owner: {
+            login: 'veelenga'
+          }
+        }
+      }
+    }
+
+    context = new Context(event, {} as any, {} as any)
+    context.config = jest.fn().mockImplementation(async () => {
+      return {
+        minAmountOfReviewers: 2,
+        autoAssignToRequestor: true,
+        reviewerGroupsByLabels: {}
+      }
+    })
+
+    context.log.debug = jest.fn() as any
+    context.log.info = jest.fn() as any
+    context.log.fatal = jest.fn() as any
+  })
+
+  test('it auto assigns requestor to the pull request', async () => {
+    context.github.issues = {
+      addAssignees: jest.fn().mockImplementation(async () => {})
+    } as any
+
+    const addAssigneesSpy = jest.spyOn(context.github.issues, 'addAssignees')
+    await handlePullRequestOpened(context)
+
+    expect(addAssigneesSpy.mock.calls[0][0].repo).toEqual('pr-review-voodoo')
+    expect(addAssigneesSpy.mock.calls[0][0].assignees).toMatchObject(['veelenga'])
+  })
+
+  test('it does not auto assign is a config flag is not enabled', async () => {
+    context.github.issues = {
+      addAssignees: jest.fn().mockImplementation(async () => {})
+    } as any
+    context.config = jest.fn().mockImplementation(async () => {
+      return {
+        minAmountOfReviewers: 2,
+        autoAssignToRequestor: false,
+        reviewerGroupsByLabels: {}
+      }
+    })
+    const addAssigneesSpy = jest.spyOn(context.github.issues, 'addAssignees')
+    await handlePullRequestOpened(context)
+    expect(addAssigneesSpy.mock.calls).toMatchObject([])
+  });
+});
 
 describe('handlePullRequestLabelChange', () => {
   let event: any
