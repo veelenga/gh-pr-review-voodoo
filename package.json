@@ -27,15 +27,15 @@
     "probot": "^7.2.0"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.0",
-    "@types/node": "^11.9.0",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^11.15.20",
     "eslint-plugin-typescript": "^0.14.0",
     "jest": "^24.0.0",
-    "nodemon": "^1.17.2",
+    "nodemon": "^2.0.4",
     "smee-client": "^1.0.2",
     "standard": "^12.0.1",
-    "ts-jest": "^24.0.0",
-    "typescript": "^3.3.1",
+    "ts-jest": "^26.1.4",
+    "typescript": "^3.9.7",
     "typescript-eslint-parser": "^22.0.0"
   },
   "engines": {
