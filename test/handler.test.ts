@@ -132,8 +132,11 @@ describe('handlePullRequestLabelChange', () => {
     expect(spy.mock.calls[0][0]).toEqual('skips adding reviewers')
   })
 
-  test('it adds reviewers to the pull request if there are available reviewers', async () => {
+  test('it adds reviewers to the pull request if there are available requested reviewers', async () => {
     context.github.pulls = {
+      listReviews: jest.fn().mockImplementation(async () => {
+        return { data: [] }
+      }),
       requestReviewers: jest.fn().mockImplementation(async () => {})
     } as any
 
@@ -148,8 +151,27 @@ describe('handlePullRequestLabelChange', () => {
     expect(createReviewRequestSpy.mock.calls[0][0]?.reviewers).toMatchObject(['reviewer1', 'reviewer2'])
   })
 
+  test('it adds reviewers to the pull request if there are available reviewers', async () => {
+    context.github.pulls = {
+      listReviews: jest.fn().mockImplementation(async () => {
+        return { data: [{ user: { login: 'test' } }] }
+      }),
+      requestReviewers: jest.fn().mockImplementation(async () => {})
+    } as any
+
+    const createReviewRequestSpy = jest.spyOn(context.github.pulls, 'requestReviewers')
+
+    await handlePullRequestLabelChange(context)
+    expect(createReviewRequestSpy.mock.calls[0][0]?.reviewers).toHaveLength(1)
+  })
+
   test('it does not add reviewers to the pull if there are no available reviewers', async () => {
     context.github.pulls = {
+      listReviews: jest.fn().mockImplementation(async () => {
+        return {
+          data: []
+        }
+      }),
       requestReviewers: jest.fn().mockImplementation(async () => {})
     } as any
 
@@ -164,6 +186,35 @@ describe('handlePullRequestLabelChange', () => {
 
     await handlePullRequestLabelChange(context)
 
+    expect(createReviewRequestSpy.mock.calls[0]).toEqual(undefined)
+  })
+
+  test('it does not add reviewer who already reviewed the pull', async () => {
+    context.github.pulls = {
+      listReviews: jest.fn().mockImplementation(async () => {
+        return { data: [{ user: { login: 'reviewer1' } }] }
+      }),
+      requestReviewers: jest.fn().mockImplementation(async () => {})
+    } as any
+
+    const createReviewRequestSpy = jest.spyOn(context.github.pulls, 'requestReviewers')
+
+    await handlePullRequestLabelChange(context)
+    expect(createReviewRequestSpy.mock.calls[0][0]?.reviewers).toHaveLength(1)
+    expect(createReviewRequestSpy.mock.calls[0][0]?.reviewers).toMatchObject(['reviewer2'])
+  })
+
+  test('it does not add reviewers to the pull if there is a sufficient number of reviewers', async () => {
+    context.github.pulls = {
+      listReviews: jest.fn().mockImplementation(async () => {
+        return { data: [{ user: { login: 'reviewer1' } }, { user: { login: 'reviewer2' } }] }
+      }),
+      requestReviewers: jest.fn().mockImplementation(async () => {})
+    } as any
+
+    const createReviewRequestSpy = jest.spyOn(context.github.pulls, 'requestReviewers')
+
+    await handlePullRequestLabelChange(context)
     expect(createReviewRequestSpy.mock.calls[0]).toEqual(undefined)
   })
 })

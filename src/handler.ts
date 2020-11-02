@@ -7,7 +7,7 @@ export async function handlePullRequestLabelChange (context : Context): Promise<
   let payload = context.payload
   let pullRequest = payload.pull_request
   let label = payload.label.name
-  let reviewers = (pullRequest.requested_reviewers || []).map((user: any) => user.login)
+  let requestReviewers = (pullRequest.requested_reviewers || []).map((user: any) => user.login)
   let pullTitle = pullRequest.title
   let requestor = pullRequest.user.login
   let pullNumber = pullRequest.number
@@ -17,7 +17,11 @@ export async function handlePullRequestLabelChange (context : Context): Promise<
     return
   }
 
-  let voodoo = new Voodoo(await getConfig(context), requestor, label, reviewers)
+  let config = await getConfig(context)
+  let listReviews = (await context.github.pulls.listReviews(context.pullRequest())).data
+  let reviewers = requestReviewers.concat(listReviews.map((entry: any) => entry.user.login))
+
+  let voodoo = new Voodoo(config, requestor, label, reviewers)
   let reviewersToRequest = voodoo.throwBones()
 
   context.log.debug(payload)
@@ -25,8 +29,7 @@ export async function handlePullRequestLabelChange (context : Context): Promise<
 
   if (reviewersToRequest.length > 0) {
     try {
-      let team_reviewers : string[] = [];
-      const params = context.issue({ reviewers: reviewersToRequest, pull_number: pullNumber })
+      const params = context.pullRequest({ reviewers: reviewersToRequest })
       const result = await context.github.pulls.requestReviewers(params)
       context.log.debug(result)
     } catch (error) {
