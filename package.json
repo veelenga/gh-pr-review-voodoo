@@ -21,10 +21,10 @@
     "test:watch": "jest --watch --notify --notifyMode=change --coverage"
   },
   "dependencies": {
-    "@chadfawcett/probot-serverless-now": "^1.0.0",
+    "@chadfawcett/probot-serverless-now": "^2.0.0",
     "@types/nock": "^9.3.0",
     "nock": "^10.0.0",
-    "probot": "^7.2.0"
+    "probot": "^10.10.1"
   },
   "devDependencies": {
     "@types/jest": "^24.9.1",
