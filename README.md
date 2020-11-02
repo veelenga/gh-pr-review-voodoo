@@ -53,6 +53,11 @@ $ now deploy
 
 Refer to [Deploying Probot Apps on Now v2](https://medium.com/twostoryrobot/deploying-probot-apps-on-now-v2-b457650dadde) for more info.
 
+## Testing
+
+```
+$ npm run test
+```
 
 ## Contributing
 
