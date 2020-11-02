@@ -7,7 +7,7 @@ export async function handlePullRequestLabelChange (context : Context): Promise<
   let payload = context.payload
   let pullRequest = payload.pull_request
   let label = payload.label.name
-  let requestReviewers = (pullRequest.requested_reviewers || []).map((user: any) => user.login)
+  let requestedReviewers = (pullRequest.requested_reviewers || []).map((user: any) => user.login)
   let pullTitle = pullRequest.title
   let requestor = pullRequest.user.login
   let pullNumber = pullRequest.number
@@ -19,7 +19,7 @@ export async function handlePullRequestLabelChange (context : Context): Promise<
 
   let config = await getConfig(context)
   let listReviews = (await context.github.pulls.listReviews(context.pullRequest())).data
-  let reviewers = requestReviewers.concat(listReviews.map((entry: any) => entry.user.login))
+  let reviewers = requestedReviewers.concat(listReviews.map((entry: any) => entry.user.login))
 
   let voodoo = new Voodoo(config, requestor, label, reviewers)
   let reviewersToRequest = voodoo.throwBones()
