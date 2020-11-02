@@ -3,3 +3,5 @@ lib
 public
 .env*
 *.pem
+
+.vercel
