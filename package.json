@@ -1,6 +1,6 @@
 {
   "name": "gh-pr-review-voodoo",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A Probot app",
   "author": "Vitalii Elenhaupt <velenhaupt@gmail.com>",
   "license": "ISC",
