@@ -49,8 +49,8 @@ describe('handlePullRequestOpened', () => {
     const addAssigneesSpy = jest.spyOn(context.github.issues, 'addAssignees')
     await handlePullRequestOpened(context)
 
-    expect(addAssigneesSpy.mock.calls[0][0].repo).toEqual('pr-review-voodoo')
-    expect(addAssigneesSpy.mock.calls[0][0].assignees).toMatchObject(['veelenga'])
+    expect(addAssigneesSpy.mock.calls[0][0]?.repo).toEqual('pr-review-voodoo')
+    expect(addAssigneesSpy.mock.calls[0][0]?.assignees).toMatchObject(['veelenga'])
   })
 
   test('it does not auto assign is a config flag is not enabled', async () => {
@@ -133,29 +133,29 @@ describe('handlePullRequestLabelChange', () => {
   })
 
   test('it adds reviewers to the pull request if there are available reviewers', async () => {
-    context.github.pullRequests = {
-      createReviewRequest: jest.fn().mockImplementation(async () => {})
+    context.github.pulls = {
+      requestReviewers: jest.fn().mockImplementation(async () => {})
     } as any
 
     const createReviewRequestSpy = jest.spyOn(
-      context.github.pullRequests,
-      'createReviewRequest'
+      context.github.pulls,
+      'requestReviewers'
     )
 
     await handlePullRequestLabelChange(context)
 
-    expect(createReviewRequestSpy.mock.calls[0][0].reviewers).toHaveLength(2)
-    expect(createReviewRequestSpy.mock.calls[0][0].reviewers).toMatchObject(['reviewer1', 'reviewer2'])
+    expect(createReviewRequestSpy.mock.calls[0][0]?.reviewers).toHaveLength(2)
+    expect(createReviewRequestSpy.mock.calls[0][0]?.reviewers).toMatchObject(['reviewer1', 'reviewer2'])
   })
 
   test('it does not add reviewers to the pull if there are no available reviewers', async () => {
-    context.github.pullRequests = {
-      createReviewRequest: jest.fn().mockImplementation(async () => {})
+    context.github.pulls = {
+      requestReviewers: jest.fn().mockImplementation(async () => {})
     } as any
 
     const createReviewRequestSpy = jest.spyOn(
-      context.github.pullRequests,
-      'createReviewRequest'
+      context.github.pulls,
+      'requestReviewers'
     )
     event.payload.pull_request.requested_reviewers = [
       { login: 'reviewer1' },

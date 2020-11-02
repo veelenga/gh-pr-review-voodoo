@@ -10,6 +10,7 @@ export async function handlePullRequestLabelChange (context : Context): Promise<
   let reviewers = (pullRequest.requested_reviewers || []).map((user: any) => user.login)
   let pullTitle = pullRequest.title
   let requestor = pullRequest.user.login
+  let pullNumber = pullRequest.number
 
   if (skipTitle(pullTitle)) {
     context.log.info('skips adding reviewers')
@@ -24,8 +25,9 @@ export async function handlePullRequestLabelChange (context : Context): Promise<
 
   if (reviewersToRequest.length > 0) {
     try {
-      const params = context.issue({ reviewers: reviewersToRequest })
-      const result = await context.github.pullRequests.createReviewRequest(params)
+      let team_reviewers : string[] = [];
+      const params = context.issue({ reviewers: reviewersToRequest, pull_number: pullNumber })
+      const result = await context.github.pulls.requestReviewers(params)
       context.log.debug(result)
     } catch (error) {
       context.log.fatal(error)
