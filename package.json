@@ -24,14 +24,14 @@
     "@chadfawcett/probot-serverless-now": "^2.0.0",
     "@types/nock": "^9.3.0",
     "nock": "^10.0.0",
-    "probot": "^10.10.1"
+    "probot": "^12.3.0"
   },
   "devDependencies": {
     "@types/jest": "^24.9.1",
     "@types/node": "^11.15.20",
     "eslint-plugin-typescript": "^0.14.0",
     "jest": "^29.3.1",
-    "nodemon": "^2.0.4",
+    "nodemon": "^2.0.20",
     "smee-client": "^1.2.3",
     "standard": "^12.0.1",
     "ts-jest": "^26.1.4",
